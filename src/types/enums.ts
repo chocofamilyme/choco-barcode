@@ -1,0 +1,23 @@
+export declare enum BarcodeFormats {
+    codabar = 'codabar',
+    code_39 = 'code_39',
+    code_93 = 'code_93',
+    code_128 = 'code_128',
+    databar = 'databar',
+    databar_exp = 'databar_exp',
+    ean_2 = 'ean_2',
+    ean_5 = 'ean_5',
+    ean_8 = 'ean_8',
+    ean_13 = 'ean_13',
+    ean_13_2 = 'ean_13+2',
+    ean_13_5 = 'ean_13+5',
+    isbn_10 = 'isbn_10',
+    isbn_13 = 'isbn_13',
+    isbn_13_2 = 'isbn_13+2',
+    isbn_13_5 = 'isbn_13+5',
+    itf = 'itf',
+    qr_code = 'qr_code',
+    sq_code = 'sq_code',
+    upc_a = 'upc_a',
+    upc_e = 'upc_e'
+}

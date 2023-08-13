@@ -1,0 +1,54 @@
+{
+    "name": "choco-barcode-scanner",
+    "version": "1.0.0",
+    "description": "A live typescript video barcode scanner API",
+    "main": "dist/index.cjs",
+    "type": "module",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "require": "./dist/barcode-scanner.cjs"
+        },
+        "./dist/index.js": {
+            "import": "./dist/index.js",
+            "require": "./dist/barcode-scanner.cjs"
+        },
+        "./dist/index.d.ts": "./dist/index.d.ts",
+        "./dist/barcode-scanner.cjs": "./dist/barcode-scanner.cjs",
+        "./dist/barcode-scanner.d.ts": "./dist/barcode-scanner.d.ts"
+    },
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "serve": "vite preview",
+        "watch": "tsc -w"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/bixxter/choco-barcode"
+    },
+    "keywords": [
+        "typescript",
+        "barcode",
+        "detector",
+        "scanner",
+        "barcode scanner",
+        "barcode detector"
+    ],
+    "author": "Asatulla Dadabaev <debixxter@gmail.com>",
+    "license": "MIT",
+    "dependencies": {
+        "@undecaf/barcode-detector-polyfill": "^0.9.20",
+        "@undecaf/zbar-wasm": "^0.9.16"
+    },
+    "devDependencies": {
+        "@originjs/vite-plugin-commonjs": "^1.0.3",
+        "@types/node": "^20.4.9",
+        "prettier": "^3.0.1",
+        "typescript": "^5.1.6",
+        "vite": "^4.4.9",
+        "vite-plugin-dts": "^3.5.1",
+        "vite-plugin-mkcert": "^1.16.0"
+    }
+}
