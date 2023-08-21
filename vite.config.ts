@@ -12,6 +12,11 @@ export default defineConfig({
         }
     },
     build: {
+        lib: {
+            entry: 'src/index.ts',
+            name: 'BarcodeScanner',
+            fileName: 'index'
+        },
         rollupOptions: {
             input: 'src/index.ts',
             external: ['zbar.wasm'],

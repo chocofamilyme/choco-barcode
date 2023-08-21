@@ -1,12 +1,12 @@
 import { BarcodeDetectorPolyfill } from '@undecaf/barcode-detector-polyfill';
-import { BarcodeFormats } from './types/enums';
 import { BarcodeInitPayload } from './types/interfaces';
 
 let detector: BarcodeDetectorPolyfill | null;
 let requestId: number | null = null;
 let video: HTMLVideoElement;
-let formats: BarcodeFormats[] | string[] = [];
+let formats: string[] = [];
 let container: HTMLElement;
+let onSuccess: (barcodes: string[]) => void;
 
 const createVideoElement = (stream: MediaProvider) => {
     video = document.createElement('video');
@@ -28,7 +28,7 @@ const detect = async (video: HTMLVideoElement) => {
 
     const barcodes = await detector.detect(video);
     if (barcodes.length > 0) {
-        return barcodes;
+        onSuccess(barcodes.map(barcode => barcode.rawValue));
     }
 
     requestId = requestAnimationFrame(() => detect(video));
@@ -49,47 +49,85 @@ const detectVideo = (repeat = true) => {
     }
 };
 
-const stopVideo = () => {
+const destroy = () => {
     if (requestId) {
         cancelAnimationFrame(requestId);
         requestId = null;
         detectVideo(false);
+
+        if (video.srcObject) {
+            (video.srcObject as MediaStream)?.getTracks().forEach(track => track.stop());
+        }
     }
 };
 
 const start = () => {
-    if (!requestId) {
-        navigator.mediaDevices
-            .getUserMedia({
-                audio: false,
-                video: { facingMode: 'environment' }
-            })
-            .then(async stream => {
-                container.appendChild(createVideoElement(stream));
-                const barcodes = await detectVideo();
-                return barcodes;
-            })
-            .catch(error => {
-                throw error;
-            });
-    } else {
-        detectVideo(false);
-    }
+    return new Promise((resolve, reject) => {
+        if (!requestId) {
+            navigator.mediaDevices
+                .getUserMedia({
+                    audio: false,
+                    video: { facingMode: 'environment' }
+                })
+                .then(async stream => {
+                    const videoElement = createVideoElement(stream);
+                    container.appendChild(videoElement);
+
+                    await detectVideo();
+                    resolve(true);
+                })
+                .catch(error => {
+                    reject(new Error('Camera not allowed'));
+                });
+        } else {
+            detectVideo(false);
+            resolve(false);
+        }
+    });
 };
 
-const initScanner = async (payload?: BarcodeInitPayload) => {
-    formats = payload?.formats || [];
-    container =
-        payload?.container instanceof HTMLElement
-            ? payload.container
-            : (document.querySelector(`#${payload?.container}` || '#barconde') as HTMLElement);
+const initScanner = async (
+    payload: BarcodeInitPayload = {
+        container: 'barcode-scanner',
+        formats: ['ean_13', 'ean_8', 'code_128'],
+        onSuccess: () => {}
+    }
+) => {
+    return new Promise((resolve, reject) => {
+        if (!payload.container) {
+            container = document.getElementById('barcode-scanner') as HTMLElement;
+        } else {
+            container =
+                typeof payload.container === 'string'
+                    ? (document.getElementById(payload.container) as HTMLElement)
+                    : (payload.container as HTMLElement);
+        }
 
-    return start();
+        if (!container) {
+            reject(new Error('Container not found'));
+        }
+
+        if (payload.formats) {
+            formats = payload.formats;
+        }
+
+        if (payload.onSuccess) {
+            onSuccess = payload.onSuccess;
+        }
+
+        start()
+            .then(() => {
+                resolve(true);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
 };
 
 const BarcodeScanner = {
-    initScanner
+    init: initScanner,
+    destroy
 };
 
 export default BarcodeScanner;
-export * from './types';
