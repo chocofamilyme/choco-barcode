@@ -5,7 +5,7 @@ let detector: BarcodeDetectorPolyfill | null;
 let requestId: number | null = null;
 let video: HTMLVideoElement;
 let formats: string[] = [];
-let container: HTMLElement;
+let container: HTMLElement | null;
 let onSuccess: (barcodes: string[]) => void;
 
 const createVideoElement = (stream: MediaProvider) => {
@@ -22,8 +22,12 @@ const createVideoElement = (stream: MediaProvider) => {
 
 const detect = async (video: HTMLVideoElement) => {
     if (!detector) {
-        const supportedFormats = await BarcodeDetectorPolyfill.getSupportedFormats();
-        detector = new BarcodeDetectorPolyfill({ formats: formats || supportedFormats });
+        if (!window.BarcodeDetector) {
+            window.BarcodeDetector = BarcodeDetectorPolyfill;
+        }
+
+        const supportedFormats = await window.BarcodeDetector.getSupportedFormats();
+        detector = new window.BarcodeDetector({ formats: formats || supportedFormats });
     }
 
     const barcodes = await detector.detect(video);
@@ -41,11 +45,11 @@ const detectVideo = (repeat = true) => {
                 requestId = requestAnimationFrame(() => detectVideo(true));
             }
         });
-    } else {
-        if (requestId) {
-            cancelAnimationFrame(requestId);
-            requestId = null;
-        }
+    }
+
+    if (requestId) {
+        cancelAnimationFrame(requestId);
+        requestId = null;
     }
 };
 
@@ -71,8 +75,7 @@ const start = () => {
                 })
                 .then(async stream => {
                     const videoElement = createVideoElement(stream);
-                    container.appendChild(videoElement);
-
+                    container?.appendChild(videoElement);
                     await detectVideo();
                     resolve(true);
                 })
@@ -95,12 +98,12 @@ const initScanner = async (
 ) => {
     return new Promise((resolve, reject) => {
         if (!payload.container) {
-            container = document.getElementById('barcode-scanner') as HTMLElement;
+            container = document.querySelector<HTMLElement>('#barcode-scanner');
         } else {
             container =
                 typeof payload.container === 'string'
-                    ? (document.getElementById(payload.container) as HTMLElement)
-                    : (payload.container as HTMLElement);
+                    ? document.querySelector<HTMLElement>(`#${payload.container}`)
+                    : payload.container;
         }
 
         if (!container) {
