@@ -7,6 +7,7 @@ let video: HTMLVideoElement;
 let formats: BarcodeFormats[] = [];
 let container: HTMLElement | null;
 let onSuccess: (barcodes: string[]) => void;
+let isPaused = false;
 
 const createVideoElement = (stream: MediaProvider) => {
     video = document.createElement('video');
@@ -85,6 +86,9 @@ const start = () => {
     });
 };
 
+const pause = () => (isPaused = true);
+const resume = () => (isPaused = false);
+
 const initScanner = async (
     payload: BarcodeInitPayload = {
         container: 'barcode-scanner',
@@ -126,7 +130,9 @@ const initScanner = async (
 
 const BarcodeScanner = {
     init: initScanner,
-    destroy
+    destroy,
+    pause,
+    resume
 };
 
 export * from './types';
