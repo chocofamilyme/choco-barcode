@@ -29,7 +29,9 @@ const detect = async (video: HTMLVideoElement) => {
 
     const barcodes = await detector.detect(video);
     if (barcodes.length > 0) {
-        onSuccess(barcodes.map(barcode => barcode.rawValue));
+        if (!isPaused) {
+            onSuccess(barcodes.map(barcode => barcode.rawValue));
+        }
     }
 
     requestId = requestAnimationFrame(() => detect(video));
