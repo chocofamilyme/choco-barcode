@@ -1,4 +1,4 @@
-export declare enum BarcodeFormats {
+export enum BarcodeFormats {
     codabar = 'codabar',
     code_39 = 'code_39',
     code_93 = 'code_93',

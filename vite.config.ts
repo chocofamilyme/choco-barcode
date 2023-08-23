@@ -23,35 +23,31 @@ export default defineConfig({
             output: [
                 {
                     format: 'es',
-                    dir: 'dist',
-                    entryFileNames: 'index.js',
-                    sourcemap: true
+                    dir: 'dist/esm',
+                    entryFileNames: 'index.js'
                 },
                 {
-                    dir: 'dist',
+                    dir: 'dist/cjs',
                     format: 'cjs',
-                    entryFileNames: 'index.cjs',
-                    sourcemap: true
+                    entryFileNames: 'index.cjs'
                 },
                 {
-                    dir: 'dist',
+                    dir: 'dist/umd',
                     format: 'umd',
                     name: 'BarcodeScanner',
                     entryFileNames: 'index.umd.js',
-                    sourcemap: true
+                    globals: {
+                        'https://cdn.jsdelivr.net/npm/@undecaf/zbar-wasm@0.9.15/dist/main.js': 'ZBarWasm'
+                    }
                 },
                 {
-                    dir: 'dist',
+                    dir: 'dist/iife',
                     format: 'iife',
                     name: 'BarcodeScanner',
                     entryFileNames: 'index.iife.js',
-                    sourcemap: true
-                },
-                {
-                    dir: 'dist',
-                    format: 'module',
-                    entryFileNames: 'index.mjs',
-                    sourcemap: true
+                    globals: {
+                        'https://cdn.jsdelivr.net/npm/@undecaf/zbar-wasm@0.9.15/dist/main.js': 'ZBarWasm'
+                    }
                 }
             ]
         }

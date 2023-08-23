@@ -1,27 +1,14 @@
 {
     "name": "choco-barcode-scanner",
-    "version": "1.2.0",
-    "description": "A live typescript video barcode scanner API",
-    "main": "dist/index.cjs",
+    "version": "1.3.0",
+    "description": "Barcode scanner for web",
+    "main": "dist/cjs/index.cjs",
+    "module": "dist/esm/index.js",
     "type": "module",
     "types": "./dist/index.d.ts",
-    "exports": {
-        ".": {
-            "import": "./dist/index.js",
-            "require": "./dist/barcode-scanner.cjs"
-        },
-        "./dist/index.js": {
-            "import": "./dist/index.js",
-            "require": "./dist/barcode-scanner.cjs"
-        },
-        "./dist/index.d.ts": "./dist/index.d.ts",
-        "./dist/barcode-scanner.cjs": "./dist/barcode-scanner.cjs",
-        "./dist/barcode-scanner.d.ts": "./dist/barcode-scanner.d.ts"
-    },
     "scripts": {
         "dev": "vite",
         "build": "tsc && vite build",
-        "serve": "vite preview",
         "watch": "tsc -w"
     },
     "repository": {
@@ -34,9 +21,13 @@
         "detector",
         "scanner",
         "barcode scanner",
-        "barcode detector"
+        "barcode detector",
+        "штрихкод",
+        "штрих код",
+        "сканер",
+        "детектор"
     ],
-    "author": "Asatulla Dadabaev <debixxter@gmail.com>",
+    "author": "Asatulla <debixxter@gmail.com>",
     "license": "MIT",
     "dependencies": {
         "@undecaf/barcode-detector-polyfill": "^0.9.20",

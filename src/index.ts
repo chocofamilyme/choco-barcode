@@ -1,10 +1,10 @@
 import { BarcodeDetectorPolyfill } from '@undecaf/barcode-detector-polyfill';
-import { BarcodeInitPayload } from './types/interfaces';
+import { BarcodeInitPayload, BarcodeFormats } from './types';
 
 let detector: BarcodeDetectorPolyfill | null;
 let requestId: number | null = null;
 let video: HTMLVideoElement;
-let formats: string[] = [];
+let formats: BarcodeFormats[] = [];
 let container: HTMLElement | null;
 let onSuccess: (barcodes: string[]) => void;
 
@@ -22,12 +22,8 @@ const createVideoElement = (stream: MediaProvider) => {
 
 const detect = async (video: HTMLVideoElement) => {
     if (!detector) {
-        if (!window.BarcodeDetector) {
-            window.BarcodeDetector = BarcodeDetectorPolyfill;
-        }
-
-        const supportedFormats = await window.BarcodeDetector.getSupportedFormats();
-        detector = new window.BarcodeDetector({ formats: formats || supportedFormats });
+        const supportedFormats = await BarcodeDetectorPolyfill.getSupportedFormats();
+        detector = new BarcodeDetectorPolyfill({ formats: formats || supportedFormats });
     }
 
     const barcodes = await detector.detect(video);
@@ -80,7 +76,7 @@ const start = () => {
                     resolve(true);
                 })
                 .catch(error => {
-                    reject(new Error('Camera not allowed'));
+                    reject(new Error('NOT_ALLOWED'));
                 });
         } else {
             detectVideo(false);
@@ -92,7 +88,7 @@ const start = () => {
 const initScanner = async (
     payload: BarcodeInitPayload = {
         container: 'barcode-scanner',
-        formats: ['ean_13', 'ean_8', 'code_128'],
+        formats: [BarcodeFormats.ean_13, BarcodeFormats.ean_8, BarcodeFormats.code_128],
         onSuccess: () => {}
     }
 ) => {
@@ -107,7 +103,7 @@ const initScanner = async (
         }
 
         if (!container) {
-            reject(new Error('Container not found'));
+            reject(new Error('NO_CONTAINER'));
         }
 
         if (payload.formats) {
@@ -133,4 +129,5 @@ const BarcodeScanner = {
     destroy
 };
 
-export default BarcodeScanner;
+export * from './types';
+export { BarcodeScanner };

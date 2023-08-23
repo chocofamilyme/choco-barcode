@@ -1,7 +1,5 @@
 import { BarcodeDetectorPolyfill } from '@undecaf/barcode-detector-polyfill';
 
 declare global {
-    interface Window {
-        BarcodeDetector?: typeof BarcodeDetectorPolyfill;
-    }
+    var BarcodeDetector: typeof BarcodeDetectorPolyfill | undefined;
 }
