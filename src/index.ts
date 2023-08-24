@@ -6,8 +6,12 @@ let requestId: number | null = null;
 let video: HTMLVideoElement;
 let formats: BarcodeFormats[] = [];
 let container: HTMLElement | null;
+let videoSettings: MediaTrackConstraints;
 let onSuccess: (barcodes: string[]) => void;
 let isPaused = false;
+
+const pause = () => (isPaused = true);
+const resume = () => (isPaused = false);
 
 const createVideoElement = (stream: MediaProvider) => {
     video = document.createElement('video');
@@ -70,7 +74,7 @@ const start = () => {
             navigator.mediaDevices
                 .getUserMedia({
                     audio: false,
-                    video: { facingMode: 'environment' }
+                    video: { facingMode: 'environment', ...videoSettings }
                 })
                 .then(async stream => {
                     const videoElement = createVideoElement(stream);
@@ -78,7 +82,7 @@ const start = () => {
                     await detectVideo();
                     resolve(true);
                 })
-                .catch(error => {
+                .catch(() => {
                     reject(new Error('NOT_ALLOWED'));
                 });
         } else {
@@ -88,36 +92,21 @@ const start = () => {
     });
 };
 
-const pause = () => (isPaused = true);
-const resume = () => (isPaused = false);
+const getContainer = (value: HTMLElement | string) => {
+    return !value
+        ? document.querySelector<HTMLElement>('#barcode-scanner')
+        : (container = typeof value === 'string' ? document.querySelector<HTMLElement>(`#${value}`) : value);
+};
 
-const initScanner = async (
-    payload: BarcodeInitPayload = {
-        container: 'barcode-scanner',
-        formats: [BarcodeFormats.ean_13, BarcodeFormats.ean_8, BarcodeFormats.code_128],
-        onSuccess: () => {}
-    }
-) => {
+const initScanner = async (payload: BarcodeInitPayload) => {
     return new Promise((resolve, reject) => {
-        if (!payload.container) {
-            container = document.querySelector<HTMLElement>('#barcode-scanner');
-        } else {
-            container =
-                typeof payload.container === 'string'
-                    ? document.querySelector<HTMLElement>(`#${payload.container}`)
-                    : payload.container;
-        }
+        container = getContainer(payload.container || '');
+        formats = payload.formats || [BarcodeFormats.ean_13, BarcodeFormats.ean_8, BarcodeFormats.code_128];
+        videoSettings = payload.settings || {};
+        onSuccess = payload.onSuccess;
 
         if (!container) {
             reject(new Error('NO_CONTAINER'));
-        }
-
-        if (payload.formats) {
-            formats = payload.formats;
-        }
-
-        if (payload.onSuccess) {
-            onSuccess = payload.onSuccess;
         }
 
         start()

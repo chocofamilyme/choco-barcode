@@ -46,6 +46,7 @@ enum BarcodeFormats {
 
 -   **payload.container**: Контейнер, в котором будет отображаться видео с камеры.
 -   **payload.formats**: Массив форматов штрихкодов для сканирования.
+-   **payload.settings**: Настройки камеры.
 -   **payload.onSuccess**: Колбэк, который вызывается при успешном сканировании.
 
 Типизация:
@@ -54,6 +55,7 @@ enum BarcodeFormats {
 interface BarcodeInitPayload {
     container?: string | HTMLElement;
     formats?: BarcodeFormats[];
+    settings?: MediaTrackSettings;
     onSuccess: (barcodes: string[]) => void;
 }
 ```
@@ -66,6 +68,10 @@ import { BarcodeScanner } from 'choco-barcode-scanner';
 BarcodeScanner.init({
     container: 'barcode-container',
     formats: ['ean_13', 'ean_8'],
+    settings: {
+        width: 640,
+        height: 480,
+    },
     onSuccess: barcodes => {}
 }).catch(error => {
     if (error.message === 'NOT_ALLOWED') {
