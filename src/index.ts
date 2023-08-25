@@ -19,6 +19,7 @@ const createVideoElement = (stream: MediaProvider) => {
     video.setAttribute('autoplay', 'true');
     video.setAttribute('playsinline', 'true');
     video.setAttribute('muted', 'true');
+    video.setAttribute('controls', 'false');
     video.srcObject = stream;
     video.classList.add('barcode-video');
 

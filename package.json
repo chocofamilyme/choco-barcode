@@ -1,6 +1,6 @@
 {
     "name": "choco-barcode-scanner",
-    "version": "1.5.1",
+    "version": "1.5.2",
     "description": "Barcode scanner for web",
     "main": "dist/cjs/index.cjs",
     "module": "dist/esm/index.js",
