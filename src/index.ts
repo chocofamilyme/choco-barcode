@@ -19,7 +19,6 @@ const createVideoElement = (stream: MediaProvider) => {
     video.setAttribute('autoplay', 'true');
     video.setAttribute('playsinline', 'true');
     video.setAttribute('muted', 'true');
-    video.setAttribute('controls', 'false');
     video.srcObject = stream;
     video.classList.add('barcode-video');
 
@@ -58,38 +57,28 @@ const detectVideo = (repeat = true) => {
 };
 
 const destroy = () => {
-    if (requestId) {
-        cancelAnimationFrame(requestId);
-        requestId = null;
-        detectVideo(false);
-
-        if (video.srcObject) {
-            (video.srcObject as MediaStream)?.getTracks().forEach(track => track.stop());
-        }
+    detectVideo(false);
+    if (video.srcObject) {
+        (video.srcObject as MediaStream)?.getTracks().forEach(track => track.stop());
     }
 };
 
 const start = () => {
     return new Promise((resolve, reject) => {
-        if (!requestId) {
-            navigator.mediaDevices
-                .getUserMedia({
-                    audio: false,
-                    video: { facingMode: 'environment', ...videoSettings }
-                })
-                .then(async stream => {
-                    const videoElement = createVideoElement(stream);
-                    container?.appendChild(videoElement);
-                    await detectVideo();
-                    resolve(true);
-                })
-                .catch(() => {
-                    reject(new Error('NOT_ALLOWED'));
-                });
-        } else {
-            detectVideo(false);
-            resolve(false);
-        }
+        navigator.mediaDevices
+            .getUserMedia({
+                audio: false,
+                video: { facingMode: 'environment', ...videoSettings }
+            })
+            .then(async stream => {
+                const videoElement = createVideoElement(stream);
+                container?.appendChild(videoElement);
+                await detectVideo();
+                resolve(true);
+            })
+            .catch(() => {
+                reject(new Error('NOT_ALLOWED'));
+            });
     });
 };
 
