@@ -13,7 +13,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/bixxter/choco-barcode"
+        "url": "https://github.com/chocofamilyme/choco-barcode"
     },
     "keywords": [
         "typescript",
