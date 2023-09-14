@@ -1,5 +1,6 @@
 import { BarcodeDetectorPolyfill } from '@undecaf/barcode-detector-polyfill';
 import { BarcodeInitPayload, BarcodeFormats } from './types';
+import { BarcodeScannerOptimized } from './optimized';
 
 let detector: BarcodeDetectorPolyfill | null;
 let requestId: number | null = null;
@@ -117,4 +118,4 @@ const BarcodeScanner = {
 };
 
 export * from './types';
-export { BarcodeScanner };
+export { BarcodeScanner, BarcodeScannerOptimized };

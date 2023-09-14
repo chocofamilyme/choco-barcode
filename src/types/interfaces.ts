@@ -6,3 +6,7 @@ export interface BarcodeInitPayload {
     settings?: MediaTrackSettings;
     onSuccess: (barcodes: string[]) => void;
 }
+
+export interface BarcodeInitOptimizedPayload extends BarcodeInitPayload {
+    drawSymbols?: boolean;
+}
