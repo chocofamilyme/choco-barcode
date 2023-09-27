@@ -48,6 +48,7 @@ enum BarcodeFormats {
 -   **payload.formats**: Массив форматов штрихкодов для сканирования.
 -   **payload.settings**: Настройки камеры.
 -   **payload.onSuccess**: Колбэк, который вызывается при успешном сканировании.
+-   **payload.drawSymbols**: Показывать ли обводку сканируемого трихкода
 
 Типизация:
 
@@ -56,6 +57,7 @@ interface BarcodeInitPayload {
     container?: string | HTMLElement;
     formats?: BarcodeFormats[];
     settings?: MediaTrackSettings;
+    drawSymbols?: boolean;
     onSuccess: (barcodes: string[]) => void;
 }
 ```
@@ -72,6 +74,7 @@ BarcodeScanner.init({
         width: 640,
         height: 480,
     },
+    drawSymbols: true,
     onSuccess: barcodes => {}
 }).catch(error => {
     if (error.message === 'NOT_ALLOWED') {
@@ -113,6 +116,7 @@ export default {
             BarcodeScanner.init({
                 container: 'barcode-container',
                 formats: ['ean_13', 'ean_8'],
+                drawSymbols: true,
                 onSuccess
             }).catch(error => {
                 if (error === 'NOT_ALLOWED') {
