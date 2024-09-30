@@ -1,5 +1,8 @@
 # Choco Barcode Scanner 🔎
 
+### Посмотреть как работает
+[👀 Тут](https://barcode-preview.netlify.app/)
+
 ### Установка
 
 ```
